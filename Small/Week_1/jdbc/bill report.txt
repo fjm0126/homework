@@ -1,1 +1,0 @@
-Account{UserName = 李四, PhoneNumber = 283746382, IdCard = 287344935, BankNumber = 1813205081, Operate = 取款, Money = 1.0}
