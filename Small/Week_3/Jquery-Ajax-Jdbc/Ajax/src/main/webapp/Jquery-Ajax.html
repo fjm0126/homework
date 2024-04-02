@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/jquery-3.7.1.js"></script>
+    <title>Jquery-Ajax</title>
+    <script>
+        $(document).ready(function(){
+            $('#get-data').click(function(){
+                $.ajax({
+                    url:'http://localhost:8080/Jquery-Ajax',
+                    type:'GET',
+                    success:function(response){
+                        $('#data-container').text(response);
+                    },
+                    error:function(error){
+                        console.log(error);
+                    }
+                })
+            })
+        })
+    </script>
+</head>
+<body>
+    <h1>Ajax Demo</h1>
+    <button id="get-data">获取ATM用户数据</button>
+    <div id="data-container"></div>
+</body>
+</html>
