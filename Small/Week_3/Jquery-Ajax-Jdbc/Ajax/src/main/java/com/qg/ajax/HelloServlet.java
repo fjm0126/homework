@@ -1,55 +1,71 @@
 package com.qg.ajax;
-
-import java.io.*;
-import java.sql.*;
-
+import com.google.gson.Gson;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
-
 @WebServlet("/Jquery-Ajax")
 public class HelloServlet extends HttpServlet {
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html");
-        Connection connection;
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws  IOException {
+        response.setContentType("application/json");
         PrintWriter out = response.getWriter();
-        out.println("用户姓名如下：");
+        String userName = request.getParameter("userName");
+        String password = request.getParameter("password");
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Map<String, Object> resultMap = new HashMap<>();
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ATM", "root", "20050126");
+            conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ATM", "root", "20050126");
+            String sql = "SELECT * FROM user WHERE UserName = ? AND PassWord = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, userName);
+            stmt.setString(2, password);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User user = new User();
+                user.setUsername(rs.getString("UserName"));
+                user.setPhoneNumber(rs.getString("PhoneNumber"));
+                resultMap.put("status", 200);
+                resultMap.put("data", user);
+                resultMap.put("msg", "用户登录成功");
+            } else {
+                resultMap.put("status", 400);
+                resultMap.put("data", null);
+                resultMap.put("msg", "用户登录失败");
+            }
+            String jsonResponse = new Gson().toJson(resultMap);
+            out.println(jsonResponse);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            resultMap.put("status", 500);
+            resultMap.put("data", null);
+            resultMap.put("msg", "服务器错误");
+            out.println(new Gson().toJson(resultMap));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        String sql = "select * from user";
-        PreparedStatement preparedStatement;
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        ResultSet resultSet;
-        try {
-            resultSet = preparedStatement.executeQuery();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        } finally {
             try {
-                while (resultSet.next()) {
-                    out.println(resultSet.getString("UserName"));
-                }
-            } catch (SQLException h) {
-                throw new RuntimeException(h);
-            }
-            try {
-                connection.close();
-                preparedStatement.close();
-                resultSet.close();
-            } catch (SQLException h) {
-                throw new RuntimeException(h);
+                if (rs!= null) rs.close();
+                if (stmt!= null) stmt.close();
+                if (conn!= null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
-
+}
 

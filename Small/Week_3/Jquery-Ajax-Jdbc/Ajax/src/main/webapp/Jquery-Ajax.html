@@ -1,30 +1,45 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户登录</title>
     <script src="js/jquery-3.7.1.js"></script>
-    <title>Jquery-Ajax</title>
     <script>
         $(document).ready(function(){
-            $('#get-data').click(function(){
+            $('#login-btn').click(function(){
+                var userName = $('#username').val();
+                var password = $('#password').val();
                 $.ajax({
-                    url:'http://localhost:8080/Jquery-Ajax',
-                    type:'GET',
-                    success:function(response){
-                        $('#data-container').text(response);
+                    url: 'http://localhost:8080/Jquery-Ajax',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        userName: userName,
+                        password: password
                     },
-                    error:function(error){
+                    success: function(response){
+                        $('#msg').text(response.msg);
+                    },
+                    error: function(error){
                         console.log(error);
                     }
-                })
-            })
-        })
+                });
+            });
+        });
     </script>
 </head>
 <body>
-    <h1>Ajax Demo</h1>
-    <button id="get-data">获取ATM用户数据</button>
-    <div id="data-container"></div>
+<h1>用户登录</h1>
+<form>
+    <label for="username">用户名：</label>
+    <input type="text" id="username" name="username"><br><br>
+    <label for="password">密码：</label>
+    <input type="password" id="password" name="password"><br><br>
+    <button type="button" id="login-btn">登录</button>
+</form>
+<div id="msg"></div>
 </body>
 </html>
+
