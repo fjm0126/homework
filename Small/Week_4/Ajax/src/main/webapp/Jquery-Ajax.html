@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户登录与注册</title>
+    <script src="js/jquery-3.7.1.js"></script>
+    <style>
+        h2 {
+            margin-bottom: 10px;
+            position: absolute;
+            top: 1px;
+            left: 500px;
+            right: 500px;
+        }
+        #form3{
+            margin-bottom: 10px;
+            position: absolute;
+            top: 60px;
+            left: 500px;
+            right: 500px;
+        }
+        #login-msg{
+            color: forestgreen;
+            position: absolute;
+            top:200px;
+            left: 0;
+            right: 0;
+        }
+        #register-msg{
+            color: crimson;
+        }
+        #getPassword-msg{
+            color: brown;
+            position: absolute;
+            top: 170px;
+            left: 500px;
+            right: 500px;
+        }
+    </style>
+    <script>
+        $(document).ready(function(){
+            $('#login-btn').click(function(){
+                var userName = $('#username').val();
+                var password = $('#password').val();
+                $.ajax({
+                    url: 'http://localhost:8080/Jquery-Ajax?method=login',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        userName: userName,
+                        password: password
+                    },
+                    success: function(response){
+                        $('#login-msg').text(response.msg);
+                    },
+                    error: function(error){
+                        console.log(error);
+                    }
+                });
+            });
+        });
+        $(document).ready(function (){
+            $('#register-btn').click(function () {
+                var name=$('#name').val();
+                var phoneNumber=$('#phoneNumber').val();
+                var IdCard=$('#IdCard').val();
+                var password1=$('#password1').val();
+                var checkPassword=$('#checkPassword').val();
+                $.ajax({
+                    url:'http://localhost:8080/Jquery-Ajax?method=register',
+                    type:'POST',
+                    dataType:'json',
+                    data:{
+                        name:name,
+                        phoneNumber:phoneNumber,
+                        IdCard:IdCard,
+                        password1:password1,
+                        checkPassword:checkPassword
+                    },
+                    success:function (response) {
+                        $('#register-msg').text(response.msg);
+                    },
+                    error: function (error){
+                        console.log(error);
+                    }
+                });
+            });
+        });
+        $(document).ready(function () {
+            $('#getPassword-btn').click(function () {
+                var name1=$('#name1').val();
+                var IdCard1=$('#IdCard1').val();
+                $.ajax({
+                    url:'http://localhost:8080/Jquery-Ajax?method=GetPassWord',
+                    type:'GET',
+                    dataType:'json',
+                    data:{
+                        name1:name1,
+                        IdCard1:IdCard1,
+                    },
+                    success:function (response) {
+                        $('#getPassword-msg').text(response.msg);
+                    },
+                    error: function (error){
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<h1>用户登录</h1>
+<form id="form1">
+    <label for="username">用户名：</label>
+    <input type="text" id="username" name="username"><br><br>
+    <label for="password">密码：</label>
+    <input type="password" id="password" name="password"><br><br>
+    <button type="button" id="login-btn">登录</button>
+</form>
+<h1>用户注册</h1>
+<form id="form2">
+    <h5>请输入以下信息！</h5>
+    <label for="name">用户名：</label>
+    <input type="text" id="name" name="name"><br><br>
+    <label for="phoneNumber">手机号：</label>
+    <input type="text" id="phoneNumber" name="phoneNumber"><br><br>
+    <label for="IdCard">身份证号：</label>
+    <input type="text" id="IdCard" name="IdCard"><br><br>
+    <label for="password1">密码(六位纯数字)：</label>
+    <input type="password" id="password1" name="password1"><br><br>
+    <label for="checkPassword">再次输入密码：</label>
+    <input type="password" id="checkPassword" name="checkPassword"><br><br>
+    <button type="button" id="register-btn">注册</button>
+</form>
+<h2>找回密码</h2>
+  <form id="form3">
+    <label for="name1">用户名：</label>
+    <input type="text" id="name1" name="name1"><br><br>
+    <label for="IdCard1">身份证号：</label>
+    <input type="text" id="IdCard1" name="IdCard1"><br><br>
+      <button type="button" id="getPassword-btn">找回密码</button>
+  </form>
+<div id="login-msg"></div>
+<div id="register-msg"></div>
+<div id="getPassword-msg"></div>
+</body>
+</html>
+
