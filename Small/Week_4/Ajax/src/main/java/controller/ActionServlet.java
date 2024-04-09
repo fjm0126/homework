@@ -1,4 +1,4 @@
-package servlet;
+package controller;
 import ConnectionPool.*;
 import User.User;
 import Utils.InsertUser;
